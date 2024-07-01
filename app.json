@@ -18,10 +18,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon1.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.jamyl.Vital_Care"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "37491ee0-7e45-4098-a5a2-80106f76b2a5"
+      }
     }
   }
 }

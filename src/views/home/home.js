@@ -1,28 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, StyleSheet, Alert, ScrollView, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
   const [appointmentData, setAppointmentData] = useState([]);
   const [doctorData, setDoctorData] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
+
+  const getToken = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const dni = await AsyncStorage.getItem('dni');
+      if (token && dni) {
+        await fetchAppointments(token, dni);
+        await fetchDoctorData(token, dni);
+      } else {
+        Alert.alert('Error', 'No se encontró un token válido. Por favor, inicia sesión.');
+      }
+    } catch (error) {
+      console.error('Error al obtener el token:', error);
+      Alert.alert('Error', 'Algo salió mal al obtener el token.');
+    }
+  };
 
   useEffect(() => {
-    const getToken = async () => {
-      try {
-        const token = await AsyncStorage.getItem('token');
-        const dni = await AsyncStorage.getItem('dni');
-        if (token && dni) {
-          await fetchAppointments(token, dni);
-          await fetchDoctorData(token, dni); // Aquí obtenemos los datos del doctor
-        } else {
-          Alert.alert('Error', 'No se encontró un token válido. Por favor, inicia sesión.');
-        }
-      } catch (error) {
-        console.error('Error al obtener el token:', error);
-        Alert.alert('Error', 'Algo salió mal al obtener el token.');
-      }
-    };
-
     getToken();
   }, []);
 
@@ -78,18 +79,28 @@ const Home = () => {
     }
   };
 
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    getToken().then(() => setRefreshing(false));
+  }, []);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Lista de Citas:</Text>
-      <ScrollView style={styles.scrollView}>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {appointmentData.length > 0 ? (
           appointmentData.map((appointment, index) => (
             <View key={index} style={styles.appointmentContainer}>
-              <Text>Razón: {appointment.reason}</Text>
-              <Text>Fecha: {appointment.date}</Text>
-              <Text>Hora: {appointment.time}</Text>
-              <Text>Doctor: {doctorData.name}</Text>
-              <Text>Especialidad: {doctorData.specialty ? doctorData.specialty.map(specialty => specialty.name).join(', ') : 'N/A'}</Text>
+              <Text style={styles.label}>Razón: <Text style={styles.text}>{appointment.reason}</Text></Text>
+              <Text style={styles.label}>Fecha: <Text style={styles.text}>{appointment.date}</Text></Text>
+              <Text style={styles.label}>Hora: <Text style={styles.text}>{appointment.time}</Text></Text>
+              <Text style={styles.label}>Doctor: <Text style={styles.text}>{doctorData.name}</Text></Text>
+              <Text style={styles.label}>Especialidad: <Text style={styles.text}>{doctorData.specialty ? doctorData.specialty.map(specialty => specialty.name).join(', ') : 'N/A'}</Text></Text>
             </View>
           ))
         ) : (
@@ -103,31 +114,47 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#4C6EF5', // Fondo azul más claro
     alignItems: 'center',
     justifyContent: 'center',
+    paddingTop: 20,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#000000',
+    color: '#FFFFFF',
   },
   scrollView: {
     width: '100%',
+    flexGrow: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
   },
   appointmentContainer: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#e0f7fa', // Color azul claro
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
     width: '80%',
     maxWidth: 400,
+    shadowColor: '#FFD700', // Sombra amarilla
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 10,
+    elevation: 5, // Elevación para la sombra en Android
+  },
+  label: {
+    fontWeight: 'bold',
+    color: '#004d40', // Color verdoso claro
+  },
+  text: {
+    fontWeight: 'normal',
   },
   loadingText: {
     fontSize: 16,
     fontStyle: 'italic',
-    color: '#000000',
+    color: '#FFFFFF',
   },
 });
 

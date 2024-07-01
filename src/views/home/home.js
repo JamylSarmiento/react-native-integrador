@@ -13,7 +13,6 @@ const Home = () => {
       const dni = await AsyncStorage.getItem('dni');
       if (token && dni) {
         await fetchAppointments(token, dni);
-        await fetchDoctorData(token, dni);
       } else {
         Alert.alert('Error', 'No se encontró un token válido. Por favor, inicia sesión.');
       }
@@ -42,6 +41,12 @@ const Home = () => {
         console.log('Datos de la cita recibidos:', data);
         if (Array.isArray(data) && data.length > 0) {
           setAppointmentData(data);
+
+          // Obtener los detalles de los doctores
+          const doctorDnis = data.map(appointment => appointment.doctor);
+          const uniqueDoctorDnis = [...new Set(doctorDnis)];
+          const doctorDetails = await fetchDoctorData(token, uniqueDoctorDnis);
+          setDoctorData(doctorDetails);
         } else {
           Alert.alert('Error', 'La lista de citas está vacía o no es válida.');
         }
@@ -55,27 +60,29 @@ const Home = () => {
     }
   };
 
-  const fetchDoctorData = async (token, dni) => {
+  const fetchDoctorData = async (token, doctorDnis) => {
     try {
-      const response = await fetch(`http://192.168.0.6:8080/api/doctor/${dni}`, {
-        method: 'GET',
-        headers: {
-          'token': token,
-          'Content-Type': 'application/json',
-        },
-      });
+      const details = {};
+      for (let dni of doctorDnis) {
+        const response = await fetch(`http://192.168.0.6:8080/api/doctor/${dni}`, {
+          method: 'GET',
+          headers: {
+            'token': token,
+            'Content-Type': 'application/json',
+          },
+        });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Datos del doctor recibidos:', data);
-        setDoctorData(data);
-      } else {
-        console.log('Respuesta del servidor no OK:', response.status);
-        Alert.alert('Error', 'No se pudo obtener los datos del doctor.');
+        if (response.ok) {
+          const data = await response.json();
+          details[dni] = data;
+        } else {
+          console.log(`No se pudo obtener los datos del doctor con DNI ${dni}:`, response.status);
+        }
       }
+      return details;
     } catch (error) {
       console.error('Error al obtener datos del doctor:', error);
-      Alert.alert('Error', 'Algo salió mal al obtener los datos del doctor.');
+      return {};
     }
   };
 
@@ -83,6 +90,10 @@ const Home = () => {
     setRefreshing(true);
     getToken().then(() => setRefreshing(false));
   }, []);
+
+  const formatDate = (dateString) => {
+    return dateString.split('T')[0];
+  };
 
   return (
     <View style={styles.container}>
@@ -97,10 +108,11 @@ const Home = () => {
           appointmentData.map((appointment, index) => (
             <View key={index} style={styles.appointmentContainer}>
               <Text style={styles.label}>Razón: <Text style={styles.text}>{appointment.reason}</Text></Text>
-              <Text style={styles.label}>Fecha: <Text style={styles.text}>{appointment.date}</Text></Text>
+              <Text style={styles.label}>Fecha: <Text style={styles.text}>{formatDate(appointment.date)}</Text></Text>
               <Text style={styles.label}>Hora: <Text style={styles.text}>{appointment.time}</Text></Text>
-              <Text style={styles.label}>Doctor: <Text style={styles.text}>{doctorData.name}</Text></Text>
-              <Text style={styles.label}>Especialidad: <Text style={styles.text}>{doctorData.specialty ? doctorData.specialty.map(specialty => specialty.name).join(', ') : 'N/A'}</Text></Text>
+              <Text style={styles.label}>Doctor DNI: <Text style={styles.text}>{appointment.doctor}</Text></Text>
+              <Text style={styles.label}>Doctor: <Text style={styles.text}>{doctorData[appointment.doctor]?.name}</Text></Text>
+              <Text style={styles.label}>Especialidad: <Text style={styles.text}>{doctorData[appointment.doctor]?.specialty ? doctorData[appointment.doctor].specialty.map(specialty => specialty.name).join(', ') : 'N/A'}</Text></Text>
             </View>
           ))
         ) : (

@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, Alert, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, Alert, ScrollView, RefreshControl, TouchableOpacity, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
   const [appointmentData, setAppointmentData] = useState([]);
   const [doctorData, setDoctorData] = useState({});
   const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation();
 
   const getToken = async () => {
     try {
@@ -91,12 +93,30 @@ const Home = () => {
     getToken().then(() => setRefreshing(false));
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('dni');
+      Alert.alert('Desconexión', 'Sesión cerrada correctamente.');
+      navigation.navigate('Login');  // Redirigir a la pantalla de inicio de sesión
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      Alert.alert('Error', 'Algo salió mal al cerrar sesión.');
+    }
+  };
+
   const formatDate = (dateString) => {
     return dateString.split('T')[0];
   };
 
   return (
     <View style={styles.container}>
+      <View style={styles.header}>
+        <Image source={require('../../../assets/logo.png')} style={styles.logo} />
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Salir</Text>
+        </TouchableOpacity>
+      </View>
       <Text style={styles.title}>Lista de Citas:</Text>
       <ScrollView
         contentContainerStyle={styles.scrollView}
@@ -131,6 +151,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: 20,
   },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  logo: {
+    width: 40,
+    height: 40,
+  },
+  logoutButton: {
+    backgroundColor: '#ff5252',
+    padding: 10,
+    borderRadius: 5,
+  },
+  logoutButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -151,10 +192,10 @@ const styles = StyleSheet.create({
     width: '80%',
     maxWidth: 400,
     shadowColor: '#FFD700', // Sombra amarilla
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 10,
-    elevation: 5, // Elevación para la sombra en Android
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 100,
+    shadowRadius: 50,
+    elevation: 100, // Elevación para la sombra en Android
   },
   label: {
     fontWeight: 'bold',

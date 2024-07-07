@@ -105,6 +105,16 @@ const Home = () => {
     }
   };
 
+  const handleReserva = async () => {
+    try {
+      Alert.alert('cambio');
+      navigation.navigate('Reserva');  
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      Alert.alert('Error', 'Algo salió mal al cerrar sesión.');
+    }
+  };
+
   const formatDate = (dateString) => {
     return dateString.split('T')[0];
   };
@@ -115,6 +125,9 @@ const Home = () => {
         <Image source={require('../../../assets/logo.png')} style={styles.logo} />
         <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
           <Text style={styles.logoutButtonText}>Salir</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleReserva} style={styles.logoutButton}>
+          <Text style={styles.logoutButtonText}>Reservar</Text>
         </TouchableOpacity>
       </View>
       <Text style={styles.title}>Lista de Citas:</Text>

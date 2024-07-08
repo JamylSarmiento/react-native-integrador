@@ -7,7 +7,10 @@ const Reserva = () => {
   const [specialties, setSpecialties] = useState([]);
   const [selectedSpecialty, setSelectedSpecialty] = useState('');
   const [selectedSpecialtyUid, setSelectedSpecialtyUid] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [doctors, setDoctors] = useState([]);
+  const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const [loadingSpecialties, setLoadingSpecialties] = useState(true);
+  const [loadingDoctors, setLoadingDoctors] = useState(true);
 
   useEffect(() => {
     const fetchSpecialties = async () => {
@@ -15,7 +18,7 @@ const Reserva = () => {
         const token = await AsyncStorage.getItem('token');
         if (!token) {
           console.error('No token found');
-          setLoading(false);
+          setLoadingSpecialties(false);
           return;
         }
 
@@ -40,30 +43,80 @@ const Reserva = () => {
           console.error('Unexpected response format:', data);
         }
 
-        setLoading(false);
+        setLoadingSpecialties(false);
       } catch (error) {
         console.error('Error fetching specialties:', error);
-        setLoading(false);
+        setLoadingSpecialties(false);
       }
     };
 
     fetchSpecialties();
   }, []);
 
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+        if (!token) {
+          console.error('No token found');
+          setLoadingDoctors(false);
+          return;
+        }
+
+        const response = await fetch('http://192.168.0.6:8080/api/doctor/', {
+          method: 'GET',
+          headers: {
+            'token': token,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        console.log('Fetched doctors:', data);
+
+        if (Array.isArray(data)) {
+          setDoctors(data);
+        } else {
+          console.error('Unexpected response format:', data);
+        }
+
+        setLoadingDoctors(false);
+      } catch (error) {
+        console.error('Error fetching doctors:', error);
+        setLoadingDoctors(false);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
+  useEffect(() => {
+    if (selectedSpecialtyUid) {
+      const filtered = doctors.filter(doctor =>
+        doctor.specialty.some(specialty => specialty.uid === selectedSpecialtyUid)
+      );
+      setFilteredDoctors(filtered);
+    }
+  }, [selectedSpecialtyUid, doctors]);
+
   const handleSpecialtyChange = (itemValue, itemIndex) => {
     setSelectedSpecialty(itemValue);
     const selectedSpecialtyObject = specialties.find(specialty => specialty.name === itemValue);
     console.log('Selected specialty object:', selectedSpecialtyObject);
     if (selectedSpecialtyObject) {
-      setSelectedSpecialtyUid(selectedSpecialtyObject.uid);
-      
+      setSelectedSpecialtyUid(selectedSpecialtyObject.id);
+      console.log('Selected Specialty UID:', selectedSpecialtyObject.id);
     }
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Pantalla de Reserva</Text>
-      {loading ? (
+      {loadingSpecialties ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <Picker
@@ -73,6 +126,18 @@ const Reserva = () => {
         >
           {specialties.map((specialty) => (
             <Picker.Item key={specialty.id} label={specialty.name} value={specialty.name} />
+          ))}
+        </Picker>
+      )}
+      {loadingDoctors ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <Picker
+          selectedValue={selectedSpecialtyUid}
+          style={styles.picker}
+        >
+          {filteredDoctors.map((doctor) => (
+            <Picker.Item key={doctor.dni} label={doctor.name} value={doctor.name} />
           ))}
         </Picker>
       )}

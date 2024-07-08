@@ -40,7 +40,6 @@ const Home = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Datos de la cita recibidos:', data);
         if (Array.isArray(data) && data.length > 0) {
           setAppointmentData(data);
 

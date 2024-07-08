@@ -1,4 +1,3 @@
-// screens/Reserva.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
@@ -7,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Reserva = () => {
   const [specialties, setSpecialties] = useState([]);
   const [selectedSpecialty, setSelectedSpecialty] = useState('');
+  const [selectedSpecialtyUid, setSelectedSpecialtyUid] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,6 +49,20 @@ const Reserva = () => {
     fetchSpecialties();
   }, []);
 
+  useEffect(() => {
+    // Log selected specialty uid when it changes
+    
+  }, [selectedSpecialtyUid]);
+
+  const handleSpecialtyChange = (itemValue, itemIndex) => {
+    setSelectedSpecialty(itemValue);
+    const selectedSpecialtyObject = specialties.find(specialty => specialty.name === itemValue);
+    if (selectedSpecialtyObject) {
+      setSelectedSpecialtyUid(selectedSpecialtyObject.uid);
+    }
+    
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Pantalla de Reserva</Text>
@@ -57,7 +71,7 @@ const Reserva = () => {
       ) : (
         <Picker
           selectedValue={selectedSpecialty}
-          onValueChange={(itemValue) => setSelectedSpecialty(itemValue)}
+          onValueChange={handleSpecialtyChange}
           style={styles.picker}
         >
           {specialties.map((specialty) => (

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Calendar } from 'react-native-calendars';
+import moment from 'moment';
 
 const Reserva = () => {
   const [specialties, setSpecialties] = useState([]);
@@ -11,6 +13,7 @@ const Reserva = () => {
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [loadingSpecialties, setLoadingSpecialties] = useState(true);
   const [loadingDoctors, setLoadingDoctors] = useState(true);
+  const [selectedDate, setSelectedDate] = useState('');
 
   useEffect(() => {
     const fetchSpecialties = async () => {
@@ -113,6 +116,10 @@ const Reserva = () => {
     }
   };
 
+  const handleDateChange = (day) => {
+    setSelectedDate(day.dateString);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Pantalla de Reserva</Text>
@@ -141,6 +148,19 @@ const Reserva = () => {
           ))}
         </Picker>
       )}
+      <Calendar
+        onDayPress={handleDateChange}
+        markedDates={{
+          [selectedDate]: { selected: true, selectedColor: 'blue' }
+        }}
+        // Limiting to weekdays (Mon-Fri)
+        minDate={moment().startOf('week').add(1, 'days').format('YYYY-MM-DD')}
+        maxDate={moment().endOf('week').add(5, 'days').format('YYYY-MM-DD')}
+        hideExtraDays={true}
+      />
+      {selectedDate ? (
+        <Text style={styles.dateText}>Fecha seleccionada: {selectedDate}</Text>
+      ) : null}
     </View>
   );
 };
@@ -157,6 +177,10 @@ const styles = StyleSheet.create({
   picker: {
     width: 200,
     height: 50,
+  },
+  dateText: {
+    fontSize: 18,
+    marginTop: 20,
   },
 });
 

@@ -40,10 +40,10 @@ const Home = () => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('Datos de la cita recibidos:', data);
         if (Array.isArray(data) && data.length > 0) {
           setAppointmentData(data);
 
-          // Obtener los detalles de los doctores
           const doctorDnis = data.map(appointment => appointment.doctor);
           const uniqueDoctorDnis = [...new Set(doctorDnis)];
           const doctorDetails = await fetchDoctorData(token, uniqueDoctorDnis);
@@ -97,7 +97,7 @@ const Home = () => {
       await AsyncStorage.removeItem('token');
       await AsyncStorage.removeItem('dni');
       Alert.alert('Desconexión', 'Sesión cerrada correctamente.');
-      navigation.navigate('Login');  // Redirigir a la pantalla de inicio de sesión
+      navigation.navigate('Login');
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
       Alert.alert('Error', 'Algo salió mal al cerrar sesión.');
@@ -106,12 +106,15 @@ const Home = () => {
 
   const handleReserva = async () => {
     try {
-      Alert.alert('cambio');
       navigation.navigate('Reserva');  
     } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      Alert.alert('Error', 'Algo salió mal al cerrar sesión.');
+      console.error('Error al realizar la reserva:', error);
+      Alert.alert('Error', 'Algo salió mal al realizar la reserva.');
     }
+  };
+
+  const handleProfile = () => {
+    navigation.navigate('Perfil');
   };
 
   const formatDate = (dateString) => {
@@ -122,14 +125,8 @@ const Home = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Image source={require('../../../assets/logo.png')} style={styles.logo} />
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Text style={styles.logoutButtonText}>Salir</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleReserva} style={styles.logoutButton}>
-          <Text style={styles.logoutButtonText}>Reservar</Text>
-        </TouchableOpacity>
+        <Text style={styles.title}>Lista de Citas</Text>
       </View>
-      <Text style={styles.title}>Lista de Citas:</Text>
       <ScrollView
         contentContainerStyle={styles.scrollView}
         refreshControl={
@@ -151,6 +148,17 @@ const Home = () => {
           <Text style={styles.loadingText}>Cargando citas...</Text>
         )}
       </ScrollView>
+      <View style={styles.navBar}>
+        <TouchableOpacity onPress={handleProfile} style={styles.navButton}>
+          <Text style={styles.navButtonText}>Perfil</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleReserva} style={styles.navButton}>
+          <Text style={styles.navButtonText}>Reservar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout} style={styles.navButton}>
+          <Text style={styles.navButtonText}>Salir</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -158,36 +166,26 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4C6EF5', // Fondo azul más claro
+    backgroundColor: '#4C6EF5',
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 20,
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
     paddingHorizontal: 20,
-    alignItems: 'center',
     marginBottom: 20,
   },
   logo: {
     width: 40,
     height: 40,
-  },
-  logoutButton: {
-    backgroundColor: '#ff5252',
-    padding: 10,
-    borderRadius: 5,
-  },
-  logoutButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+    marginRight: 10,
   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
     color: '#FFFFFF',
   },
   scrollView: {
@@ -197,21 +195,21 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   appointmentContainer: {
-    backgroundColor: '#e0f7fa', // Color azul claro
+    backgroundColor: '#e0f7fa',
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
     width: '80%',
     maxWidth: 400,
-    shadowColor: '#FFD700', // Sombra amarilla
+    shadowColor: '#FFD700',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 100,
     shadowRadius: 50,
-    elevation: 100, // Elevación para la sombra en Android
+    elevation: 100,
   },
   label: {
     fontWeight: 'bold',
-    color: '#004d40', // Color verdoso claro
+    color: '#004d40',
   },
   text: {
     fontWeight: 'normal',
@@ -220,6 +218,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontStyle: 'italic',
     color: '#FFFFFF',
+  },
+  navBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    height: 60,
+    backgroundColor: '#004d40',
+    alignItems: 'center',
+  },
+  navButton: {
+    padding: 10,
+  },
+  navButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 });
 

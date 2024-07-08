@@ -32,7 +32,8 @@ const Reserva = () => {
         }
 
         const data = await response.json();
-        
+        console.log('Fetched specialties:', data);
+
         if (Array.isArray(data)) {
           setSpecialties(data);
         } else {
@@ -49,18 +50,14 @@ const Reserva = () => {
     fetchSpecialties();
   }, []);
 
-  useEffect(() => {
-    // Log selected specialty uid when it changes
-    
-  }, [selectedSpecialtyUid]);
-
   const handleSpecialtyChange = (itemValue, itemIndex) => {
     setSelectedSpecialty(itemValue);
     const selectedSpecialtyObject = specialties.find(specialty => specialty.name === itemValue);
+    console.log('Selected specialty object:', selectedSpecialtyObject);
     if (selectedSpecialtyObject) {
       setSelectedSpecialtyUid(selectedSpecialtyObject.uid);
+      
     }
-    
   };
 
   return (

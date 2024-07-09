@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Calendar } from 'react-native-calendars';
@@ -14,6 +14,11 @@ const Reserva = () => {
   const [loadingSpecialties, setLoadingSpecialties] = useState(true);
   const [loadingDoctors, setLoadingDoctors] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDoctor, setSelectedDoctor] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
+  const [visitReason, setVisitReason] = useState('');
+
+  const times = ['9:00', '10:15', '11:30', '12:45', '14:00', '15:15', '16:30', '17:45'];
 
   useEffect(() => {
     const fetchSpecialties = async () => {
@@ -106,13 +111,21 @@ const Reserva = () => {
     }
   }, [selectedSpecialtyUid, doctors]);
 
-  const handleSpecialtyChange = (itemValue, itemIndex) => {
+  const handleSpecialtyChange = (itemValue) => {
     setSelectedSpecialty(itemValue);
     const selectedSpecialtyObject = specialties.find(specialty => specialty.name === itemValue);
     console.log('Selected specialty object:', selectedSpecialtyObject);
     if (selectedSpecialtyObject) {
       setSelectedSpecialtyUid(selectedSpecialtyObject.id);
       console.log('Selected Specialty UID:', selectedSpecialtyObject.id);
+    }
+  };
+
+  const handleDoctorChange = (itemValue) => {
+    setSelectedDoctor(itemValue);
+    const selectedDoctorObject = filteredDoctors.find(doctor => doctor.name === itemValue);
+    if (selectedDoctorObject) {
+      console.log('Selected Doctor DNI:', selectedDoctorObject.dni);
     }
   };
 
@@ -140,7 +153,8 @@ const Reserva = () => {
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <Picker
-          selectedValue={selectedSpecialtyUid}
+          selectedValue={selectedDoctor}
+          onValueChange={handleDoctorChange}
           style={styles.picker}
         >
           {filteredDoctors.map((doctor) => (
@@ -161,6 +175,21 @@ const Reserva = () => {
       {selectedDate ? (
         <Text style={styles.dateText}>Fecha seleccionada: {selectedDate}</Text>
       ) : null}
+      <Picker
+        selectedValue={selectedTime}
+        onValueChange={(itemValue) => setSelectedTime(itemValue)}
+        style={styles.picker}
+      >
+        {times.map((time, index) => (
+          <Picker.Item key={index} label={time} value={time} />
+        ))}
+      </Picker>
+      <TextInput
+        style={styles.textInput}
+        placeholder="Razón de visita:"
+        value={visitReason}
+        onChangeText={(text) => setVisitReason(text)}
+      />
     </View>
   );
 };
@@ -181,6 +210,14 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 18,
     marginTop: 20,
+  },
+  textInput: {
+    width: 200,
+    height: 50,
+    borderColor: '#000',
+    borderWidth: 1,
+    marginTop: 20,
+    paddingHorizontal: 10,
   },
 });
 

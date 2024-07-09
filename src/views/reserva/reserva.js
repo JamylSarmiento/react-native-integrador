@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TextInput, Button, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Calendar } from 'react-native-calendars';
@@ -15,6 +15,7 @@ const Reserva = () => {
   const [loadingDoctors, setLoadingDoctors] = useState(true);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState('');
+  const [selectedDoctorDni, setSelectedDoctorDni] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [visitReason, setVisitReason] = useState('');
 
@@ -22,6 +23,7 @@ const Reserva = () => {
 
   useEffect(() => {
     const fetchSpecialties = async () => {
+      const dni = await AsyncStorage.getItem('dni');
       try {
         const token = await AsyncStorage.getItem('token');
         if (!token) {
@@ -29,6 +31,7 @@ const Reserva = () => {
           setLoadingSpecialties(false);
           return;
         }
+        console.log('DNI:', dni);
 
         const response = await fetch('http://192.168.0.6:8080/api/specialty/', {
           method: 'GET',
@@ -125,12 +128,53 @@ const Reserva = () => {
     setSelectedDoctor(itemValue);
     const selectedDoctorObject = filteredDoctors.find(doctor => doctor.name === itemValue);
     if (selectedDoctorObject) {
+      setSelectedDoctorDni(selectedDoctorObject.dni);
       console.log('Selected Doctor DNI:', selectedDoctorObject.dni);
     }
   };
 
   const handleDateChange = (day) => {
     setSelectedDate(day.dateString);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      const userDni = await AsyncStorage.getItem('dni');
+
+      if (!token || !userDni) {
+        console.error('Missing token or user DNI');
+        return;
+      }
+
+      const appointmentData = {
+        reason: visitReason,
+        date: selectedDate,
+        time: selectedTime,
+        doctor: selectedDoctorDni,
+        user: userDni,
+      };
+
+      const response = await fetch('http://192.168.0.6:8080/api/appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'token': token,
+        },
+        body: JSON.stringify(appointmentData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      console.log('Appointment booked successfully:', data);
+      Alert.alert('Success', 'Appointment booked successfully');
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      Alert.alert('Error', 'Failed to book appointment');
+    }
   };
 
   return (
@@ -190,6 +234,7 @@ const Reserva = () => {
         value={visitReason}
         onChangeText={(text) => setVisitReason(text)}
       />
+      <Button title="Registrar Cita" onPress={handleSubmit} />
     </View>
   );
 };

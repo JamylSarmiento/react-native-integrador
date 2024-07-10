@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, Image, Alert, TextInput, ScrollView, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import NavBar from './NavBar'; // Importa el componente NavBar
 
 const Perfil = () => {
   const [currentSection, setCurrentSection] = useState('Usuario');
@@ -232,11 +231,7 @@ const Perfil = () => {
           </View>
         )}
       </ScrollView>
-      <NavBar 
-        onProfilePress={handleProfile}
-        onReservaPress={handleReserva}
-        onLogoutPress={handleLogout}
-      />
+      
     </View>
   );
 };

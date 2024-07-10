@@ -166,17 +166,18 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4C6EF5',
+    backgroundColor: '#fffacd',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 20,
+    paddingTop: 1,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
+    height: 90,
     paddingHorizontal: 20,
-    marginBottom: 20,
+    backgroundColor: '#1f5cc5', // Fondo azul
   },
   logo: {
     width: 40,
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#FFFF', // Manteniendo el texto en negro
   },
   scrollView: {
     width: '100%',
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '80%',
     maxWidth: 400,
-    shadowColor: '#FFD700',
+    shadowColor: '#1f5cc5',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 100,
     shadowRadius: 50,
@@ -224,7 +225,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '100%',
     height: 60,
-    backgroundColor: '#004d40',
+    backgroundColor: '#31b6a8',
     alignItems: 'center',
   },
   navButton: {

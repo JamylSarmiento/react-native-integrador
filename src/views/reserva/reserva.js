@@ -177,6 +177,31 @@ const Reserva = () => {
     }
   };
 
+  // Function to disable weekends
+  const isDisabledDate = (date) => {
+    const dayOfWeek = moment(date).day();
+    return dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday
+  };
+
+  // Generate marked dates for disabled weekends
+  const getMarkedDates = () => {
+    const dates = {};
+    const startDate = moment();
+    const endDate = moment().endOf('month');
+
+    for (let date = startDate; date.isBefore(endDate); date.add(1, 'days')) {
+      if (isDisabledDate(date)) {
+        dates[date.format('YYYY-MM-DD')] = { disabled: true, disableTouchEvent: true };
+      }
+    }
+
+    if (selectedDate) {
+      dates[selectedDate] = { selected: true, selectedColor: 'blue' };
+    }
+
+    return dates;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Pantalla de Reserva</Text>
@@ -208,13 +233,10 @@ const Reserva = () => {
       )}
       <Calendar
         onDayPress={handleDateChange}
-        markedDates={{
-          [selectedDate]: { selected: true, selectedColor: 'blue' }
-        }}
-        // Limiting to weekdays (Mon-Fri)
-        minDate={moment().startOf('week').add(1, 'days').format('YYYY-MM-DD')}
-        maxDate={moment().endOf('week').add(5, 'days').format('YYYY-MM-DD')}
-        hideExtraDays={true}
+        markedDates={getMarkedDates()}
+        disableAllTouchEventsForDisabledDays={true}
+        minDate={moment().format('YYYY-MM-DD')}
+        maxDate={moment().endOf('month').format('YYYY-MM-DD')}
       />
       {selectedDate ? (
         <Text style={styles.dateText}>Fecha seleccionada: {selectedDate}</Text>
@@ -256,13 +278,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 20,
   },
-  textInput: {
-    width: 200,
-    height: 50,
-    borderColor: '#000',
-    borderWidth: 1,
-    marginTop: 20,
-    paddingHorizontal: 10,
+  navBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    height: 60,
+    backgroundColor: '#87CEEB',
+    alignItems: 'center',
+  },
+  navButton: {
+    padding: 10,
+  },
+  navButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 });
 

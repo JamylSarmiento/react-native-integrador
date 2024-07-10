@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Image, Alert, TextInput, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, Button, StyleSheet, Image, Alert, TextInput, ScrollView,TouchableOpacity, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
@@ -95,6 +95,30 @@ const Perfil = () => {
     getUserData();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('dni');
+      Alert.alert('Desconexión', 'Sesión cerrada correctamente.');
+      navigation.navigate('Login');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      Alert.alert('Error', 'Algo salió mal al cerrar sesión.');
+    }
+  };
+
+  const handleReserva = async () => {
+    try {
+      navigation.navigate('Reserva');  
+    } catch (error) {
+      console.error('Error al realizar la reserva:', error);
+      Alert.alert('Error', 'Algo salió mal al realizar la reserva.');
+    }
+  };
+  const handleProfile = () => {
+    navigation.navigate('Perfil');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -104,8 +128,7 @@ const Perfil = () => {
       </View>
       <View style={styles.buttonsContainer}>
         <Button title="Usuario" onPress={() => setCurrentSection('Usuario')} />
-        <Button title="Reserva" onPress={() => setCurrentSection('Reserva')} />
-        <Button title="Citas" onPress={() => setCurrentSection('Citas')} />
+       
       </View>
       <ScrollView
         style={styles.contentContainer}
@@ -206,10 +229,20 @@ const Perfil = () => {
             )}
           </View>
         )}
-        {currentSection === 'Reserva' && <Text>Sección de Reserva</Text>}
-        {currentSection === 'Citas' && <Text>Sección de Citas</Text>}
       </ScrollView>
+      <View style={styles.navBar}>
+        <TouchableOpacity onPress={handleProfile} style={styles.navButton}>
+          <Text style={styles.navButtonText}>Perfil</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleReserva} style={styles.navButton}>
+          <Text style={styles.navButtonText}>Reservar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout} style={styles.navButton}>
+          <Text style={styles.navButtonText}>Salir</Text>
+        </TouchableOpacity>
+      </View>
     </View>
+    
   );
 };
 
@@ -267,6 +300,21 @@ const styles = StyleSheet.create({
   },
   buttonSeparator: {
     width: 10,
+  },
+  navBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    height: 60,
+    backgroundColor: '#87CEEB',
+    alignItems: 'center',
+  },
+  navButton: {
+    padding: 10,
+  },
+  navButtonText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
 });
 

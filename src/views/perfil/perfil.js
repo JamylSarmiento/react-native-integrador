@@ -1,7 +1,9 @@
+// Perfil.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Image, Alert, TextInput, ScrollView,TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, Button, StyleSheet, Image, Alert, TextInput, ScrollView, RefreshControl } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import NavBar from './NavBar'; // Importa el componente NavBar
 
 const Perfil = () => {
   const [currentSection, setCurrentSection] = useState('Usuario');
@@ -115,6 +117,7 @@ const Perfil = () => {
       Alert.alert('Error', 'Algo salió mal al realizar la reserva.');
     }
   };
+
   const handleProfile = () => {
     navigation.navigate('Perfil');
   };
@@ -128,7 +131,6 @@ const Perfil = () => {
       </View>
       <View style={styles.buttonsContainer}>
         <Button title="Usuario" onPress={() => setCurrentSection('Usuario')} />
-       
       </View>
       <ScrollView
         style={styles.contentContainer}
@@ -230,19 +232,12 @@ const Perfil = () => {
           </View>
         )}
       </ScrollView>
-      <View style={styles.navBar}>
-        <TouchableOpacity onPress={handleProfile} style={styles.navButton}>
-          <Text style={styles.navButtonText}>Perfil</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleReserva} style={styles.navButton}>
-          <Text style={styles.navButtonText}>Reservar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleLogout} style={styles.navButton}>
-          <Text style={styles.navButtonText}>Salir</Text>
-        </TouchableOpacity>
-      </View>
+      <NavBar 
+        onProfilePress={handleProfile}
+        onReservaPress={handleReserva}
+        onLogoutPress={handleLogout}
+      />
     </View>
-    
   );
 };
 
@@ -300,21 +295,6 @@ const styles = StyleSheet.create({
   },
   buttonSeparator: {
     width: 10,
-  },
-  navBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    height: 60,
-    backgroundColor: '#87CEEB',
-    alignItems: 'center',
-  },
-  navButton: {
-    padding: 10,
-  },
-  navButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
   },
 });
 

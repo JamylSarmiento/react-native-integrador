@@ -30,7 +30,7 @@ const Home = () => {
 
   const fetchAppointments = async (token, dni) => {
     try {
-      const response = await fetch(`http://192.168.0.6:8080/api/appointment/${dni}`, {
+      const response = await fetch(`https://api-ydqd.onrender.com/api/appointment/${dni}`, {
         method: 'GET',
         headers: {
           'token': token,
@@ -65,7 +65,7 @@ const Home = () => {
     try {
       const details = {};
       for (let dni of doctorDnis) {
-        const response = await fetch(`http://192.168.0.6:8080/api/doctor/${dni}`, {
+        const response = await fetch(`https://api-ydqd.onrender.com/api/doctor/${dni}`, {
           method: 'GET',
           headers: {
             'token': token,
@@ -186,6 +186,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    display:'flex',
+    alignItems:'center',
     fontWeight: 'bold',
     color: '#FFFF', // Manteniendo el texto en negro
   },

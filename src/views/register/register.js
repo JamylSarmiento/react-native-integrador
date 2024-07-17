@@ -45,7 +45,7 @@ const Registro = () => {
     console.log('Datos enviados:', JSON.stringify(dataToSend, null, 2));
 
     try {
-      const response = await fetch('http://192.168.0.6:8080/api/user/', {
+      const response = await fetch('https://api-ydqd.onrender.com/api/user/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

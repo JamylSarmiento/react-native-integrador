@@ -21,7 +21,7 @@ const Login = ({ navigation }) => {
 
     while (!success && attempts < maxAttempts) {
       try {
-        const response = await fetch(`http://192.168.0.6:8080/api/auth/loginUser`, {
+        const response = await fetch('https://api-ydqd.onrender.com/api/auth/loginUser', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ const Login = ({ navigation }) => {
         } else {
           attempts++;
           if (attempts === maxAttempts) {
-            Alert.alert('Error', 'Fallo en la conexión con el servidor');
+            Alert.alert('Error', 'Contraseña o Usuario Incorrecto');
           }
         }
       } catch (error) {
@@ -100,21 +100,21 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#003366',
+    backgroundColor: '#53A2BE',
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
     width: 180,
     height: 180,
-    marginBottom: 50,
+    marginBottom: 120,
   },
   formContainer: {
-    width: '80%',
+    width: '100%',
     maxWidth: 300,
   },
   input1: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: '#',
     paddingHorizontal: 10,
     paddingVertical: 8,
     marginBottom: 10,
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   registerButton: {
-    backgroundColor: '#40E0D0',
+    backgroundColor: '#0A2239',
     padding: 8,
     borderRadius: 3,
     alignItems: 'center',

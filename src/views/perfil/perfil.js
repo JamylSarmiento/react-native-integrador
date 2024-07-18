@@ -16,7 +16,7 @@ const Perfil = () => {
       const token = await AsyncStorage.getItem('token');
       const dni = await AsyncStorage.getItem('dni');
       if (token && dni) {
-        const response = await fetch(`http://192.168.18.40:8080/api/user/${dni}`, {
+        const response = await fetch(`https://api-ydqd.onrender.com/api/user/${dni}`, {
           method: 'GET',
           headers: {
             'token': token,
@@ -45,7 +45,7 @@ const Perfil = () => {
       const token = await AsyncStorage.getItem('token');
       const dni = await AsyncStorage.getItem('dni');
       if (token && dni) {
-        const response = await fetch(`http://192.168.0.6:8080/api/user/${dni}`, {
+        const response = await fetch(`https://api-ydqd.onrender.com/api/user/${dni}`, {
           method: 'PUT',
           headers: {
             'token': token,

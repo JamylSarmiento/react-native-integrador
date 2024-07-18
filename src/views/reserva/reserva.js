@@ -33,7 +33,7 @@ const Reserva = () => {
         }
         console.log('DNI:', dni);
 
-        const response = await fetch('http://192.168.18.40:8080/api/specialty/', {
+        const response = await fetch('https://api-ydqd.onrender.com/api/specialty/', {
           method: 'GET',
           headers: {
             'token': token,
@@ -74,7 +74,7 @@ const Reserva = () => {
           return;
         }
 
-        const response = await fetch('http://192.168.18.40:8080/api/doctor/', {
+        const response = await fetch('https://api-ydqd.onrender.com/api/doctor/', {
           method: 'GET',
           headers: {
             'token': token,
@@ -155,7 +155,7 @@ const Reserva = () => {
         user: userDni,
       };
 
-      const response = await fetch('http://192.168.18.40:8080/api/appointment', {
+      const response = await fetch('https://api-ydqd.onrender.com/api/appointment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

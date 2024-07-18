@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { StatusBar, Image, TextInput, View, Button, Alert, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { StatusBar, Image, TextInput, View, Button, Alert, TouchableOpacity, StyleSheet, Text, ImageBackground } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons'; // Importa el ícono de Ionicons
-
 
 const Login = ({ navigation }) => {
   const [dni, setDni] = useState('');
@@ -10,7 +9,7 @@ const Login = ({ navigation }) => {
   const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
   const ipAddresses = ['http://192.168.0.105:8080', 'http://192.168.0.6:8080', 'http://192.168.18.40:8080'];
   const maxAttempts = ipAddresses.length;
-  
+
   const handleRegister = () => {
     navigation.navigate('Registro');
   };
@@ -57,7 +56,7 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={require('../../../assets/tapizado3.jpg')} style={styles.background}>
       <StatusBar style="light" />
       <Image source={require('../../../assets/logo.png')} style={styles.logo} />
       <View style={styles.formContainer}>
@@ -84,59 +83,58 @@ const Login = ({ navigation }) => {
         <Button
           title="Iniciar Sesión"
           onPress={handleLogin}
-          color="#40E0D0"
+          color="#001f54"
         />
         <TouchableOpacity
-        style={styles.registerButton}
-        onPress={handleRegister}
+          style={styles.registerButton}
+          onPress={handleRegister}
         >
-        <Text style={styles.registerButtonText}>REGISTRARSE</Text>
+          <Text style={styles.registerButtonText}>REGISTRARSE</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: '#53A2BE',
     justifyContent: 'center',
     alignItems: 'center',
   },
   logo: {
     width: 180,
     height: 180,
-    marginBottom: 120,
+    marginBottom: 100,
   },
   formContainer: {
     width: '100%',
     maxWidth: 300,
   },
   input1: {
-    backgroundColor: '#',
+    backgroundColor: '#1282A2',
     paddingHorizontal: 10,
     paddingVertical: 8,
     marginBottom: 10,
     borderRadius: 5,
-    color: '#FFFFFF',
+    color: '#fefcfb',
   },
   input: {
     borderRadius: 5,
-    color: '#FFFFFF',
+    color: '#fefcfb',
     flex: 1,
   },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: '#1282A2',
     paddingHorizontal: 10,
     paddingVertical: 8,
     marginBottom: 30,
     borderRadius: 5,
   },
   registerButton: {
-    backgroundColor: '#0A2239',
+    backgroundColor: '#001f54',
     padding: 8,
     borderRadius: 3,
     alignItems: 'center',
@@ -145,10 +143,9 @@ const styles = StyleSheet.create({
   registerButtonText: {
     color: '#fff',
     fontSize: 15,
-
   },
   registerLink: {
-    color: '#1e90ff',
+    color: '#1282a2',
     marginTop: 20,
     textAlign: 'center',
     fontSize: 16,

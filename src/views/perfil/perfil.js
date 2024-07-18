@@ -1,6 +1,5 @@
-// Perfil.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Image, Alert, TextInput, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, TextInput, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
@@ -17,7 +16,7 @@ const Perfil = () => {
       const token = await AsyncStorage.getItem('token');
       const dni = await AsyncStorage.getItem('dni');
       if (token && dni) {
-        const response = await fetch(`http://192.168.0.6:8080/api/user/${dni}`, {
+        const response = await fetch(`http://192.168.18.40:8080/api/user/${dni}`, {
           method: 'GET',
           headers: {
             'token': token,
@@ -129,7 +128,9 @@ const Perfil = () => {
         <Text style={styles.greeting}>Hola, {userName || 'Usuario'}</Text>
       </View>
       <View style={styles.buttonsContainer}>
-        <Button title="Usuario" onPress={() => setCurrentSection('Usuario')} />
+        <TouchableOpacity style={styles.button} onPress={() => setCurrentSection('Usuario')}>
+          <Text style={styles.buttonText}>Usuario</Text>
+        </TouchableOpacity>
       </View>
       <ScrollView
         style={styles.contentContainer}
@@ -194,9 +195,13 @@ const Perfil = () => {
                 />
 
                 <View style={styles.buttonGroup}>
-                  <Button title="Guardar" onPress={updateUserData} />
+                  <TouchableOpacity style={styles.button} onPress={updateUserData}>
+                    <Text style={styles.buttonText}>Guardar</Text>
+                  </TouchableOpacity>
                   <View style={styles.buttonSeparator} />
-                  <Button title="Cancelar" onPress={() => setIsEditing(false)} />
+                  <TouchableOpacity style={styles.button} onPress={() => setIsEditing(false)}>
+                    <Text style={styles.buttonText}>Cancelar</Text>
+                  </TouchableOpacity>
                 </View>
               </>
             ) : (
@@ -225,7 +230,9 @@ const Perfil = () => {
                 <Text style={styles.label}>Género:</Text>
                 <Text style={styles.value}>{userData.gender}</Text>
 
-                <Button title="Editar" onPress={() => setIsEditing(true)} />
+                <TouchableOpacity style={styles.button} onPress={() => setIsEditing(true)}>
+                  <Text style={styles.buttonText}>Editar</Text>
+                </TouchableOpacity>
               </>
             )}
           </View>
@@ -240,7 +247,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#E7ECEF',
   },
   header: {
     alignItems: 'center',
@@ -257,12 +264,22 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 18,
-    color: '#555555',
+    color: '#001F54',
   },
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#274C77', // Verde
+    padding: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    textAlign: 'center',
   },
   contentContainer: {
     flex: 1,

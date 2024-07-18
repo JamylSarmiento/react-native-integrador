@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TextInput, Button, Alert } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TextInput, Alert, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Calendar } from 'react-native-calendars';
@@ -33,7 +33,7 @@ const Reserva = () => {
         }
         console.log('DNI:', dni);
 
-        const response = await fetch('http://192.168.0.6:8080/api/specialty/', {
+        const response = await fetch('http://192.168.18.40:8080/api/specialty/', {
           method: 'GET',
           headers: {
             'token': token,
@@ -74,7 +74,7 @@ const Reserva = () => {
           return;
         }
 
-        const response = await fetch('http://192.168.0.6:8080/api/doctor/', {
+        const response = await fetch('http://192.168.18.40:8080/api/doctor/', {
           method: 'GET',
           headers: {
             'token': token,
@@ -155,7 +155,7 @@ const Reserva = () => {
         user: userDni,
       };
 
-      const response = await fetch('http://192.168.0.6:8080/api/appointment', {
+      const response = await fetch('http://192.168.18.40:8080/api/appointment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -256,7 +256,9 @@ const Reserva = () => {
         value={visitReason}
         onChangeText={(text) => setVisitReason(text)}
       />
-      <Button title="Registrar Cita" onPress={handleSubmit} />
+      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+        <Text style={styles.buttonText}>Registrar Cita</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -266,9 +268,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#E7ECEF',
   },
   text: {
-    fontSize: 20,
+    fontSize: 30,
+    color: '#001F54', // 
   },
   picker: {
     width: 200,
@@ -278,20 +282,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 20,
   },
-  navBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-    height: 60,
-    backgroundColor: '#87CEEB',
+  textInput: {
+    width: 200,
+    height: 50,
+    borderColor: '#1282a2',
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+  button: {
+    backgroundColor: '#034078', // Color naranja para el botón
+    padding: 10,
+    borderRadius: 5,
     alignItems: 'center',
   },
-  navButton: {
-    padding: 10,
-  },
-  navButtonText: {
-    color: '#ffffff',
-    fontWeight: 'bold',
+  buttonText: {
+    color: '#FEFCFB',
+    fontSize: 16,
   },
 });
 

@@ -146,7 +146,7 @@ const Registro = () => {
             onChangeText={(value) => setPassword(value)}
           />
           <Button
-            title={showPassword ? '🙈' : '👁️'}
+            title={showPassword ? '👁️' : '🙈'}
             onPress={togglePasswordVisibility}
           />
         </View>
@@ -159,7 +159,7 @@ const Registro = () => {
             onChangeText={(value) => setConfirmPassword(value)}
           />
           <Button
-            title={showConfirmPassword ? '🙈' : '👁️'}
+            title={showConfirmPassword ? '👁️' : '🙈'}
             onPress={toggleConfirmPasswordVisibility}
           />
         </View>
@@ -177,10 +177,10 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#A3CEF1',
   },
   form: {
-    backgroundColor: '#fff',
+    backgroundColor: '#E7ECEF',
     padding: 20,
     borderRadius: 10,
     shadowColor: '#000',
@@ -201,11 +201,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   link: {
-    color: '#1e90ff',
+    color: '#1282A2',
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#001F54',
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
@@ -213,14 +213,16 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     marginBottom: 10,
+    borderColor: '#001F54'
   },
   pickerLabel: {
     fontSize: 16,
     marginBottom: 5,
+    borderColor: '#001F54'
   },
   picker: {
     height: 50,
-    borderColor: '#ccc',
+    borderColor: '#001F54',
     borderWidth: 1,
     borderRadius: 5,
   },
@@ -228,7 +230,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#001F54',
     borderRadius: 5,
     marginBottom: 10,
   },
@@ -238,7 +240,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#1e90ff',
+    backgroundColor: '#274C77',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',

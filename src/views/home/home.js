@@ -166,7 +166,7 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fffacd',
+    backgroundColor: '#E7ECEF',
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 1,
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 90,
     paddingHorizontal: 20,
-    backgroundColor: '#1f5cc5', // Fondo azul
+    backgroundColor: '#001f54', // Fondo azul
   },
   logo: {
     width: 40,
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   appointmentContainer: {
-    backgroundColor: '#e0f7fa',
+    backgroundColor: '#FEFCFB',
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     width: '100%',
     height: 60,
-    backgroundColor: '#31b6a8',
+    backgroundColor: '#034078',
     alignItems: 'center',
   },
   navButton: {

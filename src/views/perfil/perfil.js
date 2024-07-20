@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, Alert, TextInput, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, Alert, TextInput, ScrollView, RefreshControl, TouchableOpacity,ImageBackground} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 
@@ -121,6 +121,7 @@ const Perfil = () => {
   };
 
   return (
+    <ImageBackground source={require('../../../assets/tapizado.jpg')} style={styles.background}>
     <View style={styles.container}>
       <View style={styles.header}>
         <Image source={require('../../../assets/paciente.png')} style={styles.pacienteIcon} />
@@ -238,16 +239,30 @@ const Perfil = () => {
           </View>
         )}
       </ScrollView>
-      
-    </View>
+      <View style={styles.navBar}>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.navButton}>
+          <Text style={styles.navButtonText}>Citas</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Reserva')} style={styles.navButton}>
+          <Text style={styles.navButtonText}>Reservar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout} style={styles.navButton}>
+          <Text style={styles.navButtonText}>Salir</Text>
+        </TouchableOpacity>
+      </View>
+    </View></ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
+ 
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#E7ECEF',
+    paddingTop: 20,
+    
   },
   header: {
     alignItems: 'center',
@@ -272,7 +287,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#274C77', // Verde
+    backgroundColor: '#3685B5',
     padding: 10,
     borderRadius: 5,
   },
@@ -283,6 +298,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
+    marginBottom: 60, // Espacio para la barra de navegación
   },
   userInfoContainer: {
     padding: 10,
@@ -307,6 +323,26 @@ const styles = StyleSheet.create({
   },
   buttonSeparator: {
     width: 10,
+  },
+  navBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#034078',
+  },
+  navButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
   },
 });
 

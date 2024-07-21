@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TextInput, Alert, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TextInput, Alert, TouchableOpacity, ScrollView, ImageBackground, KeyboardAvoidingView, Platform, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Calendar } from 'react-native-calendars';
@@ -19,6 +19,7 @@ const Reserva = () => {
   const [selectedDoctorDni, setSelectedDoctorDni] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [visitReason, setVisitReason] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   const times = ['9:00', '10:15', '11:30', '12:45', '14:00', '15:15', '16:30', '17:45'];
   const navigation = useNavigation();
@@ -172,36 +173,21 @@ const Reserva = () => {
 
       const data = await response.json();
       console.log('Appointment booked successfully:', data);
-      Alert.alert('Success', 'Appointment booked successfully');
+      Alert.alert('Completado', 'Cita reservada con éxito');
     } catch (error) {
       console.error('Error booking appointment:', error);
-      Alert.alert('Error', 'Failed to book appointment');
+      Alert.alert('Error', 'No se pudo reservar la cita');
+    } finally {
+      setModalVisible(false); // Close the modal after submission
     }
   };
 
-  // Function to disable weekends
-  const isDisabledDate = (date) => {
-    const dayOfWeek = moment(date).day();
-    return dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday
+  const handleOpenModal = () => {
+    setModalVisible(true);
   };
 
-  // Generate marked dates for disabled weekends
-  const getMarkedDates = () => {
-    const dates = {};
-    const startDate = moment();
-    const endDate = moment().endOf('month');
-
-    for (let date = startDate; date.isBefore(endDate); date.add(1, 'days')) {
-      if (isDisabledDate(date)) {
-        dates[date.format('YYYY-MM-DD')] = { disabled: true, disableTouchEvent: true };
-      }
-    }
-
-    if (selectedDate) {
-      dates[selectedDate] = { selected: true, selectedColor: 'blue' };
-    }
-
-    return dates;
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
 
   const handleLogout = async () => {
@@ -256,7 +242,9 @@ const Reserva = () => {
           )}
           <Calendar
             onDayPress={handleDateChange}
-            markedDates={getMarkedDates()}
+            markedDates={{
+              [selectedDate]: { selected: true, selectedColor: 'blue' }
+            }}
             disableAllTouchEventsForDisabledDays={true}
             minDate={moment().format('YYYY-MM-DD')}
             maxDate={moment().endOf('month').format('YYYY-MM-DD')}
@@ -300,7 +288,7 @@ const Reserva = () => {
             value={visitReason}
             onChangeText={(text) => setVisitReason(text)}
           />
-          <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+          <TouchableOpacity style={styles.button} onPress={handleOpenModal}>
             <Text style={styles.buttonText}>Registrar Cita</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -315,6 +303,26 @@ const Reserva = () => {
             <Text style={styles.navButtonText}>Salir</Text>
           </TouchableOpacity>
         </View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={handleCloseModal}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Confirmar Reserva</Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity style={styles.cancelButton} onPress={handleCloseModal}>
+                  <Text style={styles.buttonText}>Cancelar</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.acceptButton} onPress={handleSubmit}>
+                  <Text style={styles.buttonText}>Aceptar</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     </ImageBackground>
   );
@@ -363,7 +371,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: '#FF5733',
+    backgroundColor: '#005377',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -392,6 +400,51 @@ const styles = StyleSheet.create({
   navButtonText: {
     color: '#ffffff',
     fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  cancelButton: {
+    backgroundColor: '#FF5733',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '45%',
+  },
+  acceptButton: {
+    backgroundColor: '#1282a2',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '45%',
   },
 });
 
